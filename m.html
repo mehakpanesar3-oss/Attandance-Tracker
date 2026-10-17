@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title> ❤️ </title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Georgia, serif;
+    background: linear-gradient(135deg, #ffe0ec, #ffc2d8, #fce4ec);
+    color: #7b183b;
+    text-align: center;
+    overflow-x: hidden;
+    padding: 25px 0;
+}
+
+.heart {
+    position: fixed;
+    bottom: -30px;
+    animation: floatUp 7s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    20% { opacity: 0.8; }
+    100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 90%;
+    max-width: 650px;
+    margin: 35px auto;
+    padding: 35px 22px;
+    background: rgba(255,255,255,0.75);
+    border: 2px solid white;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(190,50,100,0.2);
+}
+
+.small-title {
+    letter-spacing: 2px;
+    font-size: 13px;
+    color: #b34b70;
+}
+
+h1 {
+    font-size: clamp(28px, 7vw, 42px);
+    margin: 22px 0;
+    color: #b51f55;
+}
+
+.names {
+    font-size: clamp(27px, 6vw, 38px);
+    margin: 25px 0;
+    color: #8e1745;
+    font-weight: bold;
+}
+
+.big-heart {
+    font-size: 55px;
+    animation: heartbeat 1.2s infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.message {
+    font-size: 17px;
+    line-height: 2;
+    margin: 25px 0;
+    color: #713047;
+}
+
+button {
+    border: none;
+    padding: 13px 22px;
+    margin: 10px 5px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #e83e72, #b51f55);
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px #e8a0b9;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-3px);
+}
+
+#loveLetter {
+    display: none;
+    margin-top: 22px;
+    padding: 22px 16px;
+    background: #fff0f5;
+    border-radius: 20px;
+    border: 1px dashed #d65b85;
+    line-height: 2;
+    animation: appear 0.7s ease;
+}
+
+#loveLetter h2 {
+    margin-bottom: 15px;
+    color: #b51f55;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#surpriseText {
+    line-height: 1.9;
+    margin-top: 15px;
+    padding: 0 5px;
+}
+
+footer {
+    margin-top: 30px;
+    font-size: 13px;
+    color: #a34c6b;
+    line-height: 1.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <p class="small-title">Ik chhoti jehi sohni kahani 💗</p>
+
+    <h1>Saddi Sohni Jehi Duniya 🌸</h1>
+
+    <div class="names">
+        Gursaran <span style="color:#e83e72;">♥</span> Mehak
+    </div>
+
+    <div class="big-heart">❤️</div>
+
+    <p class="message">
+        Kujh lok zindagi vich khaas ban jaande ne... 🥹<br>
+        Ohna di ik muskaan chehre te khushi le aundi ae. 💕<br><br>
+
+        Kujh naavan nu sun ke hi chehre te smile aa jaandi ae,<br>
+        te kujh lok bina kujh kahe vi dil de kareeb ho jaande ne. 🌷<br><br>
+
+        Eh kahani vi do naavan di ae...<br>
+        <b>Gursaran te Mehak ❤️</b>
+    </p>
+
+    <button onclick="showLove()">
+        Ik Khaas Gall Parh 💌
+    </button>
+
+    <div id="loveLetter">
+
+        <h2>Mr.Gursaran ❤️</h2>
+
+        <p>
+            Je mei mere jazbaatan nu phullan vich badal sakdi,<br>
+            taan tuhde layi ik sohna jeha baag bana dindi. 🌹<br><br>
+
+            Je har soch ik taara ban sakdi,<br>
+            taan mere asmaan vich tuhda naa chamakda. ✨<br><br>
+
+            Tuhde naal judi har chhoti gall vi khaas lagdi ae,<br>
+            te kujh gallan lafzan naal nahi,<br>
+            sirf dil naal mehsoos hundiyan ne. 💗<br><br>
+
+            <b>
+                Gursaran te Mehak —<br>
+                do naavan di ik sohni jehi kahani. 💞
+            </b>
+        </p>
+
+    </div>
+
+    <button onclick="surprise()">
+        Ik Hor Surprise 🎁
+    </button>
+
+    <p id="surpriseText"></p>
+
+    <footer>
+        Dil ton banayi, pyaar naal sajayi ❤️<br>
+        Gursaran ♡ Mehak
+    </footer>
+
+</div>
+
+<script>
+
+const heartSymbols = ["❤️", "💕", "💗", "💖", "💘"];
+
+function createHeart() {
+    const heart = document.createElement("div");
+
+    heart.className = "heart";
+
+    heart.innerHTML =
+        heartSymbols[
+            Math.floor(Math.random() * heartSymbols.length)
+        ];
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (15 + Math.random() * 20) + "px";
+    heart.style.animationDuration = (4 + Math.random() * 5) + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 9000);
+}
+
+setInterval(createHeart, 450);
+
+function showLove() {
+    const letter = document.getElementById("loveLetter");
+
+    if (letter.style.display === "block") {
+        letter.style.display = "none";
+    } else {
+        letter.style.display = "block";
+    }
+}
+
+function surprise() {
+    document.getElementById("surpriseText").innerHTML =
+        "Gursaran ❤️ Mehak<br><br>" +
+        "Tuhda naa aave te chehre te smile aa jaave. 🥹💕<br>" +
+        "Kujh rishte lafzan ton vi zyada sohne hunde ne. 🌹";
+
+    document.getElementById("surpriseText").style.fontSize = "18px";
+    document.getElementById("surpriseText").style.color = "#b51f55";
+}
+
+</script>
+
+</body>
+</html>

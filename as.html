@@ -20,10 +20,9 @@
         }
 
         /* Sidebar */
-
         .sidebar {
             width: 230px;
-            height: 100vh;
+            min-height: 100vh;
             background: #3730a3;
             position: fixed;
             top: 0;
@@ -52,7 +51,6 @@
         }
 
         /* Main content */
-
         .main {
             margin-left: 230px;
             padding: 40px;
@@ -71,20 +69,19 @@
             margin-bottom: 12px;
         }
 
+        h2 {
+            color: #3730a3;
+            font-size: 21px;
+            margin: 25px 0 18px;
+        }
+
         .subtitle {
             color: #64748b;
             line-height: 1.7;
             margin-bottom: 30px;
         }
 
-        h2 {
-            color: #3730a3;
-            font-size: 21px;
-            margin-bottom: 18px;
-        }
-
         /* Add student form */
-
         .form {
             display: flex;
             gap: 12px;
@@ -92,17 +89,23 @@
             margin-bottom: 30px;
         }
 
-        input {
-            flex: 1;
-            min-width: 140px;
+        input,
+        select {
             padding: 13px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             font-size: 14px;
             outline: none;
+            background: white;
         }
 
-        input:focus {
+        input {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        input:focus,
+        select:focus {
             border-color: #6366f1;
         }
 
@@ -115,8 +118,13 @@
             cursor: pointer;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             opacity: 0.85;
+        }
+
+        button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
         }
 
         .add-btn,
@@ -126,7 +134,6 @@
         }
 
         /* Attendance summary */
-
         .summary {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -180,8 +187,7 @@
             color: #c2410c;
         }
 
-        /* Search */
-
+        /* Search and filter */
         .search-box {
             display: flex;
             gap: 10px;
@@ -197,8 +203,24 @@
             white-space: nowrap;
         }
 
-        /* Student cards */
+        .filter-box {
+            margin-bottom: 28px;
+        }
 
+        .filter-box label {
+            display: block;
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .filter-box select {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        /* Student cards */
         .studentcard {
             background: #f8faff;
             border: 1px solid #dbe3f0;
@@ -276,17 +298,20 @@
         }
 
         /* Mobile screen */
-
         @media (max-width: 850px) {
             .summary {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main {
+                padding: 25px;
             }
         }
 
         @media (max-width: 650px) {
             .sidebar {
                 width: 100%;
-                height: auto;
+                min-height: auto;
                 position: relative;
                 padding: 20px;
             }
@@ -340,7 +365,6 @@
 <body>
 
     <!-- Sidebar -->
-
     <div class="sidebar">
         <h2>Smart Attendance</h2>
 
@@ -351,7 +375,6 @@
     </div>
 
     <!-- Main content -->
-
     <div class="main">
         <div class="attendance-box">
 
@@ -364,13 +387,21 @@
             <h2>Add New Student</h2>
 
             <form class="form" id="studentForm">
-                <input type="text" id="name"
+                <input
+                    type="text"
+                    id="name"
                     placeholder="Enter student name"
-                    maxlength="80" required>
+                    maxlength="80"
+                    required
+                >
 
-                <input type="text" id="rollno"
+                <input
+                    type="text"
+                    id="rollno"
                     placeholder="Enter roll number"
-                    maxlength="30" required>
+                    maxlength="30"
+                    required
+                >
 
                 <button type="submit" class="add-btn">
                     Add Student
@@ -404,14 +435,37 @@
             <h2>Search Student</h2>
 
             <div class="search-box">
-                <input type="text" id="search"
-                    placeholder="Search by name or roll number">
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Search by name or roll number"
+                >
 
-                <button type="button" class="search-btn"
-                    onclick="searchStudent()">Search</button>
+                <button
+                    type="button"
+                    class="search-btn"
+                    onclick="searchStudent()"
+                >Search</button>
 
-                <button type="button" class="reset-btn"
-                    onclick="resetSearch()">Show All</button>
+                <button
+                    type="button"
+                    class="reset-btn"
+                    onclick="resetSearch()"
+                >Show All</button>
+            </div>
+
+            <!-- Status filter -->
+            <h2>Filter Students</h2>
+
+            <div class="filter-box">
+                <label for="statusFilter">Select Attendance Status</label>
+
+                <select id="statusFilter" onchange="filterByStatus()">
+                    <option value="All">All Students</option>
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Not Marked">Not Marked</option>
+                </select>
             </div>
 
             <h2>Student Records</h2>
@@ -426,7 +480,7 @@
     </div>
 
     <script>
-        // Load saved students
+        // Load saved student records
         let students = [];
 
         try {
@@ -452,32 +506,38 @@
 
         let searchTerm = "";
 
-        // Save student records
+        // Save records in browser storage
         function saveStudents() {
-            localStorage.setItem(
-                "attendanceStudents",
-                JSON.stringify(students)
-            );
+            try {
+                localStorage.setItem(
+                    "attendanceStudents",
+                    JSON.stringify(students)
+                );
+            } catch (error) {
+                alert("Unable to save records in this browser.");
+            }
         }
 
-        // Add student
+        // Add a new student
         document.getElementById("studentForm")
             .addEventListener("submit", function(event) {
                 event.preventDefault();
 
-                let name = document.getElementById("name").value.trim();
-                let rollno = document.getElementById("rollno").value.trim();
+                const name = document.getElementById("name").value.trim();
+                const rollno = document.getElementById("rollno").value.trim();
 
-                if (name === "" || rollno === "") {
+                if (!name || !rollno) {
                     alert("Please enter name and roll number.");
                     return;
                 }
 
-                for (let i = 0; i < students.length; i++) {
-                    if (students[i].rollno.toLowerCase() === rollno.toLowerCase()) {
-                        alert("This roll number already exists!");
-                        return;
-                    }
+                const exists = students.some(student =>
+                    student.rollno.toLowerCase() === rollno.toLowerCase()
+                );
+
+                if (exists) {
+                    alert("This roll number already exists!");
+                    return;
                 }
 
                 students.push({
@@ -488,127 +548,177 @@
 
                 saveStudents();
                 this.reset();
-                resetSearch();
+
+                searchTerm = "";
+                document.getElementById("search").value = "";
+                document.getElementById("statusFilter").value = "All";
+
+                render();
 
                 alert("Student added successfully!");
             });
 
-        // Display student records
+        // Display student records using search and status filter
         function showStudents() {
-            let list = document.getElementById("studentList");
+            const list = document.getElementById("studentList");
+            const selectedStatus =
+                document.getElementById("statusFilter").value;
+
             list.innerHTML = "";
 
-            let filtered = students
+            const filtered = students
                 .map((student, index) => ({ student, index }))
-                .filter(item =>
-                    item.student.name.toLowerCase().includes(searchTerm) ||
-                    item.student.rollno.toLowerCase().includes(searchTerm)
-                );
+                .filter(item => {
+                    const matchesSearch =
+                        item.student.name.toLowerCase().includes(searchTerm) ||
+                        item.student.rollno.toLowerCase().includes(searchTerm);
+
+                    const matchesStatus =
+                        selectedStatus === "All" ||
+                        item.student.status === selectedStatus;
+
+                    return matchesSearch && matchesStatus;
+                });
 
             if (filtered.length === 0) {
-                let empty = document.createElement("div");
+                const empty = document.createElement("div");
                 empty.className = "empty";
-                empty.textContent = students.length === 0
-                    ? "No students added yet. Add your first student above."
-                    : "No matching students found.";
+
+                if (students.length === 0) {
+                    empty.textContent =
+                        "No students added yet. Add your first student above.";
+                } else {
+                    empty.textContent =
+                        "No students match your search or selected status.";
+                }
 
                 list.appendChild(empty);
                 return;
             }
 
             filtered.forEach(function(item) {
-                let i = item.index;
-                let student = item.student;
+                const i = item.index;
+                const student = item.student;
 
-                let card = document.createElement("div");
+                const card = document.createElement("div");
                 card.className = "studentcard";
 
-                let heading = document.createElement("h3");
+                const heading = document.createElement("h3");
                 heading.textContent = "Name: " + student.name;
 
-                let roll = document.createElement("p");
+                const roll = document.createElement("p");
                 roll.className = "roll";
                 roll.textContent = "Roll No: " + student.rollno;
 
-                let status = document.createElement("span");
-                status.className = "status " + student.status;
+                const status = document.createElement("span");
+                status.className =
+                    "status " + student.status.replace(/\s/g, "");
                 status.textContent = "Status: " + student.status;
 
-                let actions = document.createElement("div");
+                const actions = document.createElement("div");
                 actions.className = "actions";
 
-                let presentBtn = document.createElement("button");
+                const presentBtn = document.createElement("button");
                 presentBtn.className = "present-btn";
                 presentBtn.textContent = "Present";
                 presentBtn.onclick = () => markAttendance(i, "Present");
 
-                let absentBtn = document.createElement("button");
+                const absentBtn = document.createElement("button");
                 absentBtn.className = "absent-btn";
                 absentBtn.textContent = "Absent";
                 absentBtn.onclick = () => markAttendance(i, "Absent");
 
-                let editBtn = document.createElement("button");
+                const editBtn = document.createElement("button");
                 editBtn.className = "edit-btn";
                 editBtn.textContent = "Edit";
                 editBtn.onclick = () => editStudent(i);
 
-                let deleteBtn = document.createElement("button");
+                const deleteBtn = document.createElement("button");
                 deleteBtn.className = "delete-btn";
                 deleteBtn.textContent = "Delete";
                 deleteBtn.onclick = () => deleteStudent(i);
 
-                actions.append(presentBtn, absentBtn, editBtn, deleteBtn);
+                // Lock attendance after first marking
+                if (student.status === "Present" ||
+                    student.status === "Absent") {
+                    presentBtn.disabled = true;
+                    absentBtn.disabled = true;
+
+                    presentBtn.title = "Attendance already marked";
+                    absentBtn.title = "Attendance already marked";
+                }
+
+                actions.append(
+                    presentBtn,
+                    absentBtn,
+                    editBtn,
+                    deleteBtn
+                );
+
                 card.append(heading, roll, status, actions);
                 list.appendChild(card);
             });
         }
 
-        // Mark Present or Absent
+        // Mark attendance only once
         function markAttendance(i, newStatus) {
-            if (students[i].status === newStatus) {
-                alert("This student is already marked " + newStatus + ".");
+            if (!students[i]) return;
+
+            if (students[i].status === "Present" ||
+                students[i].status === "Absent") {
+                alert(
+                    "Attendance is already marked as " +
+                    students[i].status +
+                    ". Status cannot be changed."
+                );
                 return;
             }
 
             students[i].status = newStatus;
 
             saveStudents();
-            showStudents();
-            showSummary();
+            render();
         }
 
-        // Edit student
+        // Edit student details without changing attendance
         function editStudent(i) {
-            let name = prompt("Enter new name", students[i].name);
+            const nameInput = prompt(
+                "Enter new name",
+                students[i].name
+            );
 
-            if (name === null) return;
+            if (nameInput === null) return;
 
-            let rollno = prompt("Enter new roll number", students[i].rollno);
+            const rollInput = prompt(
+                "Enter new roll number",
+                students[i].rollno
+            );
 
-            if (rollno === null) return;
+            if (rollInput === null) return;
 
-            name = name.trim();
-            rollno = rollno.trim();
+            const name = nameInput.trim();
+            const rollno = rollInput.trim();
 
-            if (name === "" || rollno === "") {
+            if (!name || !rollno) {
                 alert("Please fill both fields.");
                 return;
             }
 
-            for (let j = 0; j < students.length; j++) {
-                if (j !== i &&
-                    students[j].rollno.toLowerCase() === rollno.toLowerCase()) {
-                    alert("This roll number already exists!");
-                    return;
-                }
+            const duplicate = students.some((student, index) =>
+                index !== i &&
+                student.rollno.toLowerCase() === rollno.toLowerCase()
+            );
+
+            if (duplicate) {
+                alert("This roll number already exists!");
+                return;
             }
 
             students[i].name = name;
             students[i].rollno = rollno;
 
             saveStudents();
-            showStudents();
-            showSummary();
+            render();
         }
 
         // Delete student
@@ -620,26 +730,31 @@
             students.splice(i, 1);
 
             saveStudents();
-            showStudents();
-            showSummary();
+            render();
         }
 
-        // Update summary
+        // Update summary counts
         function showSummary() {
             let present = 0;
             let absent = 0;
 
-            for (let i = 0; i < students.length; i++) {
-                if (students[i].status === "Present") {
+            students.forEach(student => {
+                if (student.status === "Present") {
                     present++;
-                } else if (students[i].status === "Absent") {
+                } else if (student.status === "Absent") {
                     absent++;
                 }
-            }
+            });
 
-            document.getElementById("totalCount").textContent = students.length;
-            document.getElementById("presentCount").textContent = present;
-            document.getElementById("absentCount").textContent = absent;
+            document.getElementById("totalCount").textContent =
+                students.length;
+
+            document.getElementById("presentCount").textContent =
+                present;
+
+            document.getElementById("absentCount").textContent =
+                absent;
+
             document.getElementById("unmarkedCount").textContent =
                 students.length - present - absent;
         }
@@ -652,26 +767,34 @@
             showStudents();
         }
 
-        // Show all students
+        // Reset search and display all students
         function resetSearch() {
             searchTerm = "";
             document.getElementById("search").value = "";
-
+            document.getElementById("statusFilter").value = "All";
             showStudents();
         }
 
         // Search while typing
-        document.getElementById("search").addEventListener("input", function() {
-            searchTerm = this.value.trim().toLowerCase();
-            showStudents();
-        });
+        document.getElementById("search")
+            .addEventListener("input", function() {
+                searchTerm = this.value.trim().toLowerCase();
+                showStudents();
+            });
 
-        // Initial display
+        // Apply status filter
+        function filterByStatus() {
+            showStudents();
+        }
+
+        // Update records and summary
         function render() {
             showStudents();
             showSummary();
         }
 
+        // Initial display
+        saveStudents();
         render();
     </script>
 

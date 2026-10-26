@@ -1,0 +1,679 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - Smart Attendance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef2ff;
+            color: #1e293b;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background: #3730a3;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 30px 20px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            font-size: 21px;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #4f46e5;
+        }
+
+        /* Main content */
+
+        .main {
+            margin-left: 230px;
+            padding: 40px;
+        }
+
+        .attendance-box {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.10);
+        }
+
+        h1 {
+            color: #3730a3;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #3730a3;
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        /* Add student form */
+
+        .form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 140px;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+        }
+
+        button {
+            padding: 11px 15px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .add-btn,
+        .search-btn,
+        .edit-btn {
+            background: #4f46e5;
+        }
+
+        /* Attendance summary */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            padding: 20px 10px;
+            border-radius: 12px;
+            text-align: center;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+        }
+
+        .summary-card h3 {
+            font-size: 27px;
+            color: #3730a3;
+            margin-bottom: 8px;
+        }
+
+        .summary-card p {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .present-summary {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .present-summary h3 {
+            color: #15803d;
+        }
+
+        .absent-summary {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .absent-summary h3 {
+            color: #b91c1c;
+        }
+
+        .unmarked-summary {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .unmarked-summary h3 {
+            color: #c2410c;
+        }
+
+        /* Search */
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            white-space: nowrap;
+        }
+
+        /* Student cards */
+
+        .studentcard {
+            background: #f8faff;
+            border: 1px solid #dbe3f0;
+            border-left: 5px solid #6366f1;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .studentcard h3 {
+            color: #4338ca;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .studentcard .roll {
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status.Present {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status.Absent {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .present-btn {
+            background: #16a34a;
+        }
+
+        .absent-btn {
+            background: #ef4444;
+        }
+
+        .delete-btn {
+            background: #64748b;
+        }
+
+        .empty {
+            text-align: center;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 30px 15px;
+            border-radius: 10px;
+            color: #64748b;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* Mobile screen */
+
+        @media (max-width: 850px) {
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 20px;
+            }
+
+            .sidebar h2 {
+                margin-bottom: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 12px;
+            }
+
+            .attendance-box {
+                padding: 22px 16px;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+
+            .form {
+                flex-direction: column;
+            }
+
+            .form input,
+            .form button {
+                width: 100%;
+            }
+
+            .search-box {
+                flex-wrap: wrap;
+            }
+
+            .search-box input {
+                flex-basis: 100%;
+            }
+
+            .search-btn,
+            .reset-btn {
+                flex: 1;
+            }
+
+            .actions button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+        <h2>Smart Attendance</h2>
+
+        <a href="home.html">🏠 Home</a>
+        <a href="about.html">ℹ️ About Us</a>
+        <a href="as.html" class="active">📋 Attendance</a>
+        <a href="contact.html">📞 Contact</a>
+    </div>
+
+    <!-- Main content -->
+
+    <div class="main">
+        <div class="attendance-box">
+
+            <h1>Attendance Tracker</h1>
+
+            <p class="subtitle">
+                Add students, manage their records and mark daily attendance easily.
+            </p>
+
+            <h2>Add New Student</h2>
+
+            <form class="form" id="studentForm">
+                <input type="text" id="name"
+                    placeholder="Enter student name"
+                    maxlength="80" required>
+
+                <input type="text" id="rollno"
+                    placeholder="Enter roll number"
+                    maxlength="30" required>
+
+                <button type="submit" class="add-btn">
+                    Add Student
+                </button>
+            </form>
+
+            <h2>Attendance Summary</h2>
+
+            <div class="summary">
+                <div class="summary-card">
+                    <h3 id="totalCount">0</h3>
+                    <p>Total Students</p>
+                </div>
+
+                <div class="summary-card present-summary">
+                    <h3 id="presentCount">0</h3>
+                    <p>Present Students</p>
+                </div>
+
+                <div class="summary-card absent-summary">
+                    <h3 id="absentCount">0</h3>
+                    <p>Absent Students</p>
+                </div>
+
+                <div class="summary-card unmarked-summary">
+                    <h3 id="unmarkedCount">0</h3>
+                    <p>Not Marked</p>
+                </div>
+            </div>
+
+            <h2>Search Student</h2>
+
+            <div class="search-box">
+                <input type="text" id="search"
+                    placeholder="Search by name or roll number">
+
+                <button type="button" class="search-btn"
+                    onclick="searchStudent()">Search</button>
+
+                <button type="button" class="reset-btn"
+                    onclick="resetSearch()">Show All</button>
+            </div>
+
+            <h2>Student Records</h2>
+
+            <div id="studentList"></div>
+
+        </div>
+
+        <footer>
+            © 2026 Smart Attendance Tracker System
+        </footer>
+    </div>
+
+    <script>
+        // Load saved students
+        let students = [];
+
+        try {
+            const saved = localStorage.getItem("attendanceStudents");
+            const data = saved ? JSON.parse(saved) : [];
+
+            if (Array.isArray(data)) {
+                students = data.filter(student =>
+                    student &&
+                    typeof student.name === "string" &&
+                    typeof student.rollno === "string"
+                );
+
+                students.forEach(student => {
+                    if (!["Present", "Absent"].includes(student.status)) {
+                        student.status = "Not Marked";
+                    }
+                });
+            }
+        } catch (error) {
+            students = [];
+        }
+
+        let searchTerm = "";
+
+        // Save student records
+        function saveStudents() {
+            localStorage.setItem(
+                "attendanceStudents",
+                JSON.stringify(students)
+            );
+        }
+
+        // Add student
+        document.getElementById("studentForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                let name = document.getElementById("name").value.trim();
+                let rollno = document.getElementById("rollno").value.trim();
+
+                if (name === "" || rollno === "") {
+                    alert("Please enter name and roll number.");
+                    return;
+                }
+
+                for (let i = 0; i < students.length; i++) {
+                    if (students[i].rollno.toLowerCase() === rollno.toLowerCase()) {
+                        alert("This roll number already exists!");
+                        return;
+                    }
+                }
+
+                students.push({
+                    name: name,
+                    rollno: rollno,
+                    status: "Not Marked"
+                });
+
+                saveStudents();
+                this.reset();
+                resetSearch();
+
+                alert("Student added successfully!");
+            });
+
+        // Display student records
+        function showStudents() {
+            let list = document.getElementById("studentList");
+            list.innerHTML = "";
+
+            let filtered = students
+                .map((student, index) => ({ student, index }))
+                .filter(item =>
+                    item.student.name.toLowerCase().includes(searchTerm) ||
+                    item.student.rollno.toLowerCase().includes(searchTerm)
+                );
+
+            if (filtered.length === 0) {
+                let empty = document.createElement("div");
+                empty.className = "empty";
+                empty.textContent = students.length === 0
+                    ? "No students added yet. Add your first student above."
+                    : "No matching students found.";
+
+                list.appendChild(empty);
+                return;
+            }
+
+            filtered.forEach(function(item) {
+                let i = item.index;
+                let student = item.student;
+
+                let card = document.createElement("div");
+                card.className = "studentcard";
+
+                let heading = document.createElement("h3");
+                heading.textContent = "Name: " + student.name;
+
+                let roll = document.createElement("p");
+                roll.className = "roll";
+                roll.textContent = "Roll No: " + student.rollno;
+
+                let status = document.createElement("span");
+                status.className = "status " + student.status;
+                status.textContent = "Status: " + student.status;
+
+                let actions = document.createElement("div");
+                actions.className = "actions";
+
+                let presentBtn = document.createElement("button");
+                presentBtn.className = "present-btn";
+                presentBtn.textContent = "Present";
+                presentBtn.onclick = () => markAttendance(i, "Present");
+
+                let absentBtn = document.createElement("button");
+                absentBtn.className = "absent-btn";
+                absentBtn.textContent = "Absent";
+                absentBtn.onclick = () => markAttendance(i, "Absent");
+
+                let editBtn = document.createElement("button");
+                editBtn.className = "edit-btn";
+                editBtn.textContent = "Edit";
+                editBtn.onclick = () => editStudent(i);
+
+                let deleteBtn = document.createElement("button");
+                deleteBtn.className = "delete-btn";
+                deleteBtn.textContent = "Delete";
+                deleteBtn.onclick = () => deleteStudent(i);
+
+                actions.append(presentBtn, absentBtn, editBtn, deleteBtn);
+                card.append(heading, roll, status, actions);
+                list.appendChild(card);
+            });
+        }
+
+        // Mark Present or Absent
+        function markAttendance(i, newStatus) {
+            if (students[i].status === newStatus) {
+                alert("This student is already marked " + newStatus + ".");
+                return;
+            }
+
+            students[i].status = newStatus;
+
+            saveStudents();
+            showStudents();
+            showSummary();
+        }
+
+        // Edit student
+        function editStudent(i) {
+            let name = prompt("Enter new name", students[i].name);
+
+            if (name === null) return;
+
+            let rollno = prompt("Enter new roll number", students[i].rollno);
+
+            if (rollno === null) return;
+
+            name = name.trim();
+            rollno = rollno.trim();
+
+            if (name === "" || rollno === "") {
+                alert("Please fill both fields.");
+                return;
+            }
+
+            for (let j = 0; j < students.length; j++) {
+                if (j !== i &&
+                    students[j].rollno.toLowerCase() === rollno.toLowerCase()) {
+                    alert("This roll number already exists!");
+                    return;
+                }
+            }
+
+            students[i].name = name;
+            students[i].rollno = rollno;
+
+            saveStudents();
+            showStudents();
+            showSummary();
+        }
+
+        // Delete student
+        function deleteStudent(i) {
+            if (!confirm("Are you sure you want to delete this student?")) {
+                return;
+            }
+
+            students.splice(i, 1);
+
+            saveStudents();
+            showStudents();
+            showSummary();
+        }
+
+        // Update summary
+        function showSummary() {
+            let present = 0;
+            let absent = 0;
+
+            for (let i = 0; i < students.length; i++) {
+                if (students[i].status === "Present") {
+                    present++;
+                } else if (students[i].status === "Absent") {
+                    absent++;
+                }
+            }
+
+            document.getElementById("totalCount").textContent = students.length;
+            document.getElementById("presentCount").textContent = present;
+            document.getElementById("absentCount").textContent = absent;
+            document.getElementById("unmarkedCount").textContent =
+                students.length - present - absent;
+        }
+
+        // Search students
+        function searchStudent() {
+            searchTerm = document.getElementById("search")
+                .value.trim().toLowerCase();
+
+            showStudents();
+        }
+
+        // Show all students
+        function resetSearch() {
+            searchTerm = "";
+            document.getElementById("search").value = "";
+
+            showStudents();
+        }
+
+        // Search while typing
+        document.getElementById("search").addEventListener("input", function() {
+            searchTerm = this.value.trim().toLowerCase();
+            showStudents();
+        });
+
+        // Initial display
+        function render() {
+            showStudents();
+            showSummary();
+        }
+
+        render();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Smart Attendance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef2ff;
+            color: #1e293b;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background: #3730a3;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 30px 20px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            font-size: 21px;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #4f46e5;
+        }
+
+        /* Main content */
+
+        .main {
+            margin-left: 230px;
+            padding: 40px;
+        }
+
+        .contact-box {
+            max-width: 810px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.10);
+        }
+
+        h1 {
+            text-align: center;
+            color: #3730a3;
+            font-size: 34px;
+            margin-bottom: 15px;
+        }
+
+        .intro {
+            text-align: center;
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            margin-bottom: 22px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3730a3;
+        }
+
+        #result {
+            text-align: center;
+            margin-top: 18px;
+            color: #15803d;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #64748b;
+        }
+
+        /* Mobile screen */
+
+        @media (max-width: 650px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 20px;
+            }
+
+            .sidebar h2 {
+                margin-bottom: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 12px;
+            }
+
+            .contact-box {
+                padding: 25px 18px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+        <h2>Smart Attendance</h2>
+
+        <a href="home.html">🏠 Home</a>
+        <a href="about.html">ℹ️ About Us</a>
+        <a href="as.html">📋 Attendance</a>
+        <a href="contact.html" class="active">📞 Contact</a>
+    </div>
+
+    <!-- Contact form -->
+
+    <div class="main">
+
+        <div class="contact-box">
+
+            <h1>Contact Us</h1>
+
+            <p class="intro">
+                Have any questions or suggestions about our
+                Smart Attendance Tracker System? Send us a message!
+            </p>
+
+            <form id="contactForm">
+
+                <label for="name">Your Name</label>
+                <input type="text" id="name"
+                    placeholder="Enter your name" required>
+
+                <label for="email">Your Email</label>
+                <input type="email" id="email"
+                    placeholder="Enter your email" required>
+
+                <label for="message">Your Message</label>
+                <textarea id="message"
+                    placeholder="Write your message"
+                    required></textarea>
+
+                <button type="submit">Send Message</button>
+
+            </form>
+
+            <p id="result"></p>
+
+        </div>
+
+        <footer>
+            <p>© 2026 Smart Attendance Tracker System</p>
+        </footer>
+
+    </div>
+
+    <script>
+        let form = document.getElementById("contactForm");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let message = document.getElementById("message").value.trim();
+
+            if (name === "" || email === "" || message === "") {
+                alert("Please fill all fields!");
+                return;
+            }
+
+            document.getElementById("result").textContent =
+                "Thank you, " + name + "! Your message has been checked.";
+
+            form.reset();
+        });
+    </script>
+
+</body>
+</html>
